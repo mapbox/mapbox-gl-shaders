@@ -12,6 +12,7 @@ uniform mat4 u_matrix;
 uniform vec4 u_color;
 uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
+uniform lowp float u_opacity;
 varying vec4 v_color;
 
 void main() {
@@ -26,6 +27,7 @@ void main() {
     directional = mix(0.7, 1.0, directional * 2.0 * (0.2 + t) / 1.2);
 
     v_color.rgb *= directional;
+    v_color *= u_opacity;
     v_color += shadow * u_shadow;
 }
 
