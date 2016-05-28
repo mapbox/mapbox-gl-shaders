@@ -15,12 +15,20 @@ uniform float u_scale_a;
 uniform float u_scale_b;
 uniform float u_tile_units_to_pixels;
 
-attribute vec2 a_pos;
+#ifdef EXTRUSION
+    attribute vec3 a_pos;
+    attribute vec3 a_normal;
+#else
+    attribute vec2 a_pos;
+#endif
 
 varying vec2 v_pos_a;
 varying vec2 v_pos_b;
 
 void main() {
+#ifdef EXTRUSION
+    gl_Position = u_matrix * vec4(a_pos, 1);
+#else
     gl_Position = u_matrix * vec4(a_pos, 0, 1);
     vec2 scaled_size_a = u_scale_a * u_pattern_size_a;
     vec2 scaled_size_b = u_scale_b * u_pattern_size_b;
@@ -28,7 +36,7 @@ void main() {
     // the correct offset needs to be calculated.
     //
     // The offset depends on how many pixels are between the world origin and
-    // the edge of the tile:
+    // the edge of the tile:8
     // vec2 offset = mod(pixel_coord, size)
     //
     // At high zoom levels there are a ton of pixels between the world origin
