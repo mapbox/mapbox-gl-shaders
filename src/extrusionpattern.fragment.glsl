@@ -23,6 +23,7 @@ varying float v_directional;
 #pragma mapbox: define lowp float maxH
 #pragma mapbox: define lowp float opacity
 
+
 void main() {
     #pragma mapbox: initialize lowp float minH
     #pragma mapbox: initialize lowp float maxH
