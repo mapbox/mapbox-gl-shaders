@@ -17,6 +17,8 @@ uniform sampler2D u_image;
 
 varying vec2 v_pos_a;
 varying vec2 v_pos_b;
+varying vec4 v_shadow;
+varying float v_directional;
 
 void main() {
 
@@ -28,7 +30,10 @@ void main() {
     vec2 pos2 = mix(u_pattern_tl_b, u_pattern_br_b, imagecoord_b);
     vec4 color2 = texture2D(u_image, pos2);
 
-    gl_FragColor = mix(color1, color2, u_mix) * u_opacity;
+    vec4 mixedColor = mix(color1, color2, u_mix);
+    mixedColor.rgb *= v_directional;
+
+    gl_FragColor = (mixedColor + v_shadow) * u_opacity;
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);
