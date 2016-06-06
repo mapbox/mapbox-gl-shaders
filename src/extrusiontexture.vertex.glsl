@@ -14,6 +14,8 @@ attribute vec2 a_pos;
 
 // #ifndef MAPBOX_GL_JS
 varying vec2 v_pos;
+uniform float u_xdim;
+uniform float u_ydim;
 
 // #else
 // varying vec2 v_pos0;
@@ -28,7 +30,9 @@ void main() {
 
 
     // v_pos = a_pos / dimension;
-    v_pos = a_pos;
+    // v_pos = a_pos / 8192.0; {}
+    v_pos.x = a_pos.x / u_xdim;
+    v_pos.y = 1.0 - a_pos.y / u_ydim;
 
 
 // #else

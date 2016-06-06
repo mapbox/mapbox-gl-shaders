@@ -26,6 +26,7 @@ varying vec2 v_pos;
 // #endif
 
 void main() {
-    gl_FragColor = texture2D(u_texture, v_pos) * u_opacity + vec4(0.1,0.0,0.0,0.1);
+    gl_FragColor = texture2D(u_texture, v_pos) * u_opacity;
+     // + vec4(0.1,0.0,0.0,0.1);
     // gl_FragColor = vec4(1.0,0.1,0.1,1.0);
 }

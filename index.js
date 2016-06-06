@@ -38,6 +38,10 @@ module.exports = {
       fragmentSource: fs.readFileSync(path.join(__dirname, 'src/extrusionpattern.fragment.glsl'), 'utf8'),
       vertexSource: fs.readFileSync(path.join(__dirname, 'src/extrusionpattern.vertex.glsl'), 'utf8')
   },
+  extrusiontexture: {
+      fragmentSource: fs.readFileSync(path.join(__dirname, 'src/extrusiontexture.fragment.glsl'), 'utf8'),
+      vertexSource: fs.readFileSync(path.join(__dirname, 'src/extrusiontexture.vertex.glsl'), 'utf8')
+  },
   line: {
     fragmentSource: fs.readFileSync(path.join(__dirname, 'src/line.fragment.glsl'), 'utf8'),
     vertexSource: fs.readFileSync(path.join(__dirname, 'src/line.vertex.glsl'), 'utf8')
