@@ -11,6 +11,8 @@ uniform int u_xdim;
 uniform int u_ydim;
 attribute vec2 a_pos;
 varying vec2 v_pos;
+uniform float u_xdim;
+uniform float u_ydim;
 
 void main() {
     gl_Position = u_matrix * vec4(a_pos, 0, 1);
