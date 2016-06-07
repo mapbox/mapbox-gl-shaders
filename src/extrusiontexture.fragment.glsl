@@ -6,10 +6,8 @@ precision mediump float;
 #define highp
 #endif
 
-// #ifndef MAPBOX_GL_JS
 uniform sampler2D u_texture;
 uniform float u_opacity;
-// #endif
 
 varying vec2 v_pos;
 
@@ -27,6 +25,4 @@ varying vec2 v_pos;
 
 void main() {
     gl_FragColor = texture2D(u_texture, v_pos) * u_opacity;
-     // + vec4(0.1,0.0,0.0,0.1);
-    // gl_FragColor = vec4(1.0,0.1,0.1,1.0);
 }
