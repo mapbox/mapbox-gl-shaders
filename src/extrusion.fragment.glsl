@@ -7,7 +7,11 @@ precision mediump float;
 #endif
 
 varying vec4 v_color;
+#pragma mapbox: define lowp float minH
+#pragma mapbox: define lowp float maxH
 
 void main() {
+    #pragma mapbox: initialize lowp float minH
+    #pragma mapbox: initialize lowp float maxH
     gl_FragColor = v_color;
 }
