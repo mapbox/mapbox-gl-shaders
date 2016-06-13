@@ -18,7 +18,8 @@ uniform float u_tile_units_to_pixels;
 uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
 
-attribute vec3 a_pos;
+attribute vec2 a_pos;
+attribute float a_isUpper;
 attribute vec3 a_normal;
 attribute float a_edgedistance;
 
@@ -27,10 +28,16 @@ varying vec2 v_pos_b;
 varying vec4 v_shadow;
 varying float v_directional;
 
-void main() {
-    gl_Position = u_matrix * vec4(a_pos, 1);
+#pragma mapbox: define lowp float minH
+#pragma mapbox: define lowp float maxH
 
-    vec3 sth = a_pos;
+void main() {
+    #pragma mapbox: initialize lowp float minH
+    #pragma mapbox: initialize lowp float maxH
+
+    float z = a_isUpper > 0.0 ? maxH : minH;
+
+    gl_Position = u_matrix * vec4(a_pos, z, 1);
 
     vec2 scaled_size_a = u_scale_a * u_pattern_size_a;
     vec2 scaled_size_b = u_scale_b * u_pattern_size_b;
@@ -39,11 +46,11 @@ void main() {
     vec2 offset_a = mod(mod(mod(u_pixel_coord_upper, scaled_size_a) * 256.0, scaled_size_a) * 256.0 + u_pixel_coord_lower, scaled_size_a);
     vec2 offset_b = mod(mod(mod(u_pixel_coord_upper, scaled_size_b) * 256.0, scaled_size_b) * 256.0 + u_pixel_coord_lower, scaled_size_b);
 
-    if (a_normal[0] == 1.0 && a_normal[1] == 0.0 && a_normal[2] == 16384.0) {
-        v_pos_a = (u_tile_units_to_pixels * vec2(a_pos[0], a_pos[1]) + offset_a) / scaled_size_a;
-        v_pos_b = (u_tile_units_to_pixels * vec2(a_pos[0], a_pos[1]) + offset_b) / scaled_size_b;
+    if (a_normal.x == 1.0 && a_normal.y == 0.0 && a_normal.z == 16384.0) {
+        v_pos_a = (u_tile_units_to_pixels * vec2(a_pos.x, a_pos.y) + offset_a) / scaled_size_a;
+        v_pos_b = (u_tile_units_to_pixels * vec2(a_pos.x, a_pos.y) + offset_b) / scaled_size_b;
     } else {
-        float hf = a_pos[2] * -8.0;
+        float hf = z * -8.0;
 
         v_pos_a = (u_tile_units_to_pixels * vec2(a_edgedistance, hf) + offset_a) / scaled_size_a;
         v_pos_b = (u_tile_units_to_pixels * vec2(a_edgedistance, hf) + offset_b) / scaled_size_b;
