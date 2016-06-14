@@ -6,7 +6,6 @@ precision mediump float;
 #define highp
 #endif
 
-uniform float u_opacity;
 uniform vec2 u_pattern_tl_a;
 uniform vec2 u_pattern_br_a;
 uniform vec2 u_pattern_tl_b;
@@ -22,10 +21,12 @@ varying float v_directional;
 
 #pragma mapbox: define lowp float minH
 #pragma mapbox: define lowp float maxH
+#pragma mapbox: define lowp float opacity
 
 void main() {
     #pragma mapbox: initialize lowp float minH
     #pragma mapbox: initialize lowp float maxH
+    #pragma mapbox: initialize lowp float opacity
 
     vec2 imagecoord = mod(v_pos_a, 1.0);
     vec2 pos = mix(u_pattern_tl_a, u_pattern_br_a, imagecoord);

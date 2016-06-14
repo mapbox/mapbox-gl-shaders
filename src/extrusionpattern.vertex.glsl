@@ -30,10 +30,12 @@ varying float v_directional;
 
 #pragma mapbox: define lowp float minH
 #pragma mapbox: define lowp float maxH
+#pragma mapbox: define lowp float opacity
 
 void main() {
     #pragma mapbox: initialize lowp float minH
     #pragma mapbox: initialize lowp float maxH
+    #pragma mapbox: initialize lowp float opacity
 
     float z = a_isUpper > 0.0 ? maxH : minH;
 
