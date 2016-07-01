@@ -15,20 +15,32 @@ uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
 varying vec4 v_color;
 
+#ifndef MAPBOX_GL_JS
+attribute float a_minH;
+attribute float a_maxH;
+#else
 #pragma mapbox: define lowp float minH
 #pragma mapbox: define lowp float maxH
+#endif
+
 #pragma mapbox: define lowp vec4 color
 #pragma mapbox: define highp float opacity
 
 void main() {
+#ifdef MAPBOX_GL_JS
     #pragma mapbox: initialize lowp float minH
     #pragma mapbox: initialize lowp float maxH
+#endif
     #pragma mapbox: initialize lowp vec4 color
     #pragma mapbox: initialize highp float opacity
 
     float ed = a_edgedistance; // this is dumb, but we have to use each attrib in order to not trip a VAO assert
 
+#ifdef MAPBOX_GL_JS
     gl_Position = u_matrix * vec4(a_pos, a_isUpper > 0.0 ? maxH : minH, 1);
+#else
+    gl_Position = u_matrix * vec4(a_pos, a_isUpper > 0.0 ? a_maxH : a_minH, 1);
+#endif
 
     v_color = color;
 
