@@ -19,4 +19,5 @@ void main() {
     #pragma mapbox: initialize highp float opacity
 
     gl_FragColor = v_color;
+
 }
