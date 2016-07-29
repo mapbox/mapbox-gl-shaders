@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 
+console.warn('Using forked shader. Check /mapbox-gl-js/js/render/painter/use_program.js');
+
 // readFileSync calls must be written out long-form for brfs.
 module.exports = {
   debug: {
@@ -41,6 +43,10 @@ module.exports = {
   },
   raster: {
     fragmentSource: fs.readFileSync(path.join(__dirname, 'src/raster.fragment.glsl'), 'utf8'),
+    vertexSource: fs.readFileSync(path.join(__dirname, 'src/raster.vertex.glsl'), 'utf8')
+  },
+  'data-driven-raster': {
+    fragmentSource: fs.readFileSync(path.join(__dirname, 'src/data-driven-raster.fragment.glsl'), 'utf8'),
     vertexSource: fs.readFileSync(path.join(__dirname, 'src/raster.vertex.glsl'), 'utf8')
   },
   icon: {
