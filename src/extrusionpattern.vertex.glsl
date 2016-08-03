@@ -19,7 +19,6 @@ uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
 
 attribute vec2 a_pos;
-attribute float a_isUpper;
 attribute vec3 a_normal;
 attribute float a_edgedistance;
 
@@ -37,7 +36,8 @@ void main() {
     #pragma mapbox: initialize lowp float maxH
     #pragma mapbox: initialize lowp float opacity
 
-    float z = a_isUpper > 0.0 ? maxH : minH;
+    float t = mod(a_normal.x, 2.0);
+    float z = t > 0.0 ? maxH : minH;
 
     gl_Position = u_matrix * vec4(a_pos, z, 1);
 
@@ -58,7 +58,6 @@ void main() {
         v_pos_b = (u_tile_units_to_pixels * vec2(a_edgedistance, hf) + offset_b) / scaled_size_b;
     }
 
-    float t = mod(a_normal.x, 2.0);
     float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
     float shadow = clamp((0.3 - directional) / 7.0, 0.0, 0.3);
     directional = mix(0.7, 1.0, directional * 2.0 * (0.2 + t) / 1.2);
