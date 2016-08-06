@@ -31,25 +31,42 @@ void main() {
 
     gl_Position = u_matrix * vec4(a_pos, a_isUpper > 0.0 ? maxH : minH, 1);
 
-    //v_color = color;
-
-    float t = mod(a_normal.x, 2.0);
-
     vec3 lightcolor = u_lightcolor.rgb;
     float lightintensity = u_lightcolor.a;
 
+    // Add slight ambient lighting so no extrusions are totally black
+    // TODO: include the lightintensity in the calculation?
+    vec4 ambientlight = vec4(0.05, 0.05, 0.05, 1.0);
+    v_color = ambientlight;
+
+    // How dark/bright is the surface color?
+    float colorvalue = (color.r + color.g + color.b) / 3.0;
+
     float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
+    directional = mix((1.0 - lightintensity), max((2.0 - colorvalue + lightintensity), 1.0), directional);
 
-    //float shadow = clamp((0.3 - directional) / 7.0, 0.0, 0.3);
-    directional = mix((1.0 - lightintensity), 1.0, directional * 2.0 * (0.2 + t) / 1.2);
+    // Used to add a gradient along z axis of buildings. Maybe add back later?:
+    //float t = mod(a_normal.x, 2.0);
+    // t = 1 when top vertex, t = 0 when bottom vertex
+    //directional = mix(0.3, 1.0, directional * 2.0 * (0.2 +
+        // log(t * clamp(maxH / 150.0, 0.0, 1.0) + 1.0)
+        // sqrt(t * clamp(maxH / 150.0, 0.0, 1.0))
+        //(t * clamp(maxH / 100.0, 0.0, 1.0))
+        //pow(t * clamp(maxH / 150.0, 0.0, 1.0), 0.5)
+    //) / 1.2);
 
-    //v_color.rgb *= clamp((directional * lightcolor * lightintensity), (1.0 - lightcolor), 1.0);
-    v_color.r = clamp((color.r * directional * lightcolor.r * lightintensity), (1.0-lightcolor.r), 1.0);
-    v_color.g = clamp((color.g * directional * lightcolor.g * lightintensity), (1.0-lightcolor.g), 1.0);
-    v_color.b = clamp((color.b * directional * lightcolor.b * lightintensity), (1.0-lightcolor.b), 1.0);
+    //directional = mix(0.0, 1.0, directional * 2.0 * 
+        //((0.2 + (t < 1.0 ? 0.0 : t)) / 1.2));
+
+    //v_color.r += mix(clamp(1.0-lightcolor.r, 0.0, 1.0), 1.0, (color.r * directional * lightcolor.r * lightintensity));
+    //v_color.g += mix(clamp(1.0-lightcolor.g, 0.0, 1.0), 1.0, (color.g * directional * lightcolor.g * lightintensity));
+    //v_color.b += mix(clamp(1.0-lightcolor.b, 0.0, 1.0), 1.0, (color.b * directional * lightcolor.b * lightintensity));     
+
+    v_color.r += clamp(color.r * directional * lightcolor.r, mix(0.0, 0.3, 1.0 - lightcolor.r), 1.0);
+    v_color.g += clamp(color.g * directional * lightcolor.g, mix(0.0, 0.3, 1.0 - lightcolor.g), 1.0);
+    v_color.b += clamp(color.b * directional * lightcolor.b, mix(0.0, 0.3, 1.0 - lightcolor.b), 1.0); 
 
     v_color *= opacity;
 
-    //v_color += shadow;
     //v_color += shadow * u_shadow;
 }
