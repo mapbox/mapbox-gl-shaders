@@ -14,6 +14,7 @@ uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
 // uniform float u_opacity;
 // uniform vec4 u_color;
+uniform lowp vec4 u_outline_color;
 varying vec4 v_color;
 
 #ifndef MAPBOX_GL_JS
@@ -25,7 +26,6 @@ attribute float a_maxH;
 #endif
 
 #pragma mapbox: define lowp vec4 color
-#pragma mapbox: define lowp vec4 outline_color
 #pragma mapbox: define highp float opacity
 
 void main() {
@@ -34,7 +34,6 @@ void main() {
     #pragma mapbox: initialize lowp float maxH
 #endif
     #pragma mapbox: initialize lowp vec4 color
-    #pragma mapbox: initialize lowp vec4 outline_color
     // TODO remove this per-feature opacity
     #pragma mapbox: initialize highp float opacity
 
@@ -48,7 +47,7 @@ void main() {
 #endif
 
 #ifdef OUTLINE
-    v_color = outline_color;
+    v_color = u_outline_color;
 #else
     v_color = color;
 #endif
