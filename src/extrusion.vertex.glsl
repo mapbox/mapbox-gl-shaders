@@ -34,15 +34,22 @@ void main() {
     vec3 lightcolor = u_lightcolor.rgb;
     float lightintensity = u_lightcolor.a;
 
-    // Add slight ambient lighting so no extrusions are totally black
-    // TODO: include the lightintensity in the calculation?
-    vec4 ambientlight = vec4(0.05, 0.05, 0.05, 1.0);
-    v_color = ambientlight;
-
     // How dark/bright is the surface color?
     float colorvalue = (color.r + color.g + color.b) / 3.0;
 
+    // Add slight ambient lighting so no extrusions are totally black
+    // TODO: include the lightintensity in the calculation?
+    vec4 ambientlight = vec4(0.03, 0.03, 0.03, 1.0);
+    v_color = ambientlight;
+    color += ambientlight;
+
+    // Calculate cos(theta), where theta is the angle between surface normal and diffuse light ray 
     float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
+
+    // Adjust directional so that 
+    // the range of values for highlight/shading is narrower 
+    // with lower light intensity
+    // and lighter/brighter colors
     directional = mix((1.0 - lightintensity), max((2.0 - colorvalue + lightintensity), 1.0), directional);
 
     // Used to add a gradient along z axis of buildings. Maybe add back later?:
@@ -62,11 +69,13 @@ void main() {
     //v_color.g += mix(clamp(1.0-lightcolor.g, 0.0, 1.0), 1.0, (color.g * directional * lightcolor.g * lightintensity));
     //v_color.b += mix(clamp(1.0-lightcolor.b, 0.0, 1.0), 1.0, (color.b * directional * lightcolor.b * lightintensity));     
 
+    // Assign final color based on surface + ambient light color, diffuse light directional, and light color
+    // with lower bounds adjusted to hue of light
+    // so that shading is tinted with the complementary (opposite) color to the light color
     v_color.r += clamp(color.r * directional * lightcolor.r, mix(0.0, 0.3, 1.0 - lightcolor.r), 1.0);
     v_color.g += clamp(color.g * directional * lightcolor.g, mix(0.0, 0.3, 1.0 - lightcolor.g), 1.0);
     v_color.b += clamp(color.b * directional * lightcolor.b, mix(0.0, 0.3, 1.0 - lightcolor.b), 1.0); 
 
+    // Adjust final color according to user-assigned opacity value
     v_color *= opacity;
-
-    //v_color += shadow * u_shadow;
 }
