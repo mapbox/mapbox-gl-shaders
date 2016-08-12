@@ -12,6 +12,8 @@ attribute float a_edgedistance;
 uniform mat4 u_matrix;
 uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
+// uniform float u_opacity;
+// uniform vec4 u_color;
 varying vec4 v_color;
 
 #ifndef MAPBOX_GL_JS
@@ -23,6 +25,7 @@ attribute float a_maxH;
 #endif
 
 #pragma mapbox: define lowp vec4 color
+#pragma mapbox: define lowp vec4 outline_color
 #pragma mapbox: define highp float opacity
 
 void main() {
@@ -31,6 +34,8 @@ void main() {
     #pragma mapbox: initialize lowp float maxH
 #endif
     #pragma mapbox: initialize lowp vec4 color
+    #pragma mapbox: initialize lowp vec4 outline_color
+    // TODO remove this per-feature opacity
     #pragma mapbox: initialize highp float opacity
 
     float ed = a_edgedistance; // this is dumb, but we have to use each attrib in order to not trip a VAO assert
@@ -42,7 +47,11 @@ void main() {
     gl_Position = u_matrix * vec4(a_pos, t > 0.0 ? a_maxH : a_minH, 1);
 #endif
 
+#ifdef OUTLINE
+    v_color = outline_color;
+#else
     v_color = color;
+#endif
 
     float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
     float shadow = clamp((0.3 - directional) / 7.0, 0.0, 0.3);
@@ -52,6 +61,6 @@ void main() {
 
     v_color.rgb *= directional;
 
-    v_color *= opacity;
+    // v_color *= u_opacity;
     v_color += shadow * u_shadow;
 }
