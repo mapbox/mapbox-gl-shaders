@@ -12,7 +12,6 @@ attribute vec3 a_normal;
 attribute float a_edgedistance;
 uniform mat4 u_matrix;
 uniform vec3 u_lightdir;
-uniform vec4 u_shadow;
 varying vec4 v_color;
 uniform vec4 u_lightcolor;
 
@@ -49,25 +48,17 @@ void main() {
     // Adjust directional so that 
     // the range of values for highlight/shading is narrower 
     // with lower light intensity
-    // and lighter/brighter colors
+    // and with lighter/brighter surface colors
     directional = mix((1.0 - lightintensity), max((2.0 - colorvalue + lightintensity), 1.0), directional);
 
-    // Used to add a gradient along z axis of buildings. Maybe add back later?:
-    //float t = mod(a_normal.x, 2.0);
+    // Add gradient along z axis of side surfaces
+    // Still needs a bit of work before usable
+    float t = mod(a_normal.x, 2.0);
     // t = 1 when top vertex, t = 0 when bottom vertex
-    //directional = mix(0.3, 1.0, directional * 2.0 * (0.2 +
-        // log(t * clamp(maxH / 150.0, 0.0, 1.0) + 1.0)
-        // sqrt(t * clamp(maxH / 150.0, 0.0, 1.0))
-        //(t * clamp(maxH / 100.0, 0.0, 1.0))
-        //pow(t * clamp(maxH / 150.0, 0.0, 1.0), 0.5)
-    //) / 1.2);
-
-    //directional = mix(0.0, 1.0, directional * 2.0 * 
-        //((0.2 + (t < 1.0 ? 0.0 : t)) / 1.2));
-
-    //v_color.r += mix(clamp(1.0-lightcolor.r, 0.0, 1.0), 1.0, (color.r * directional * lightcolor.r * lightintensity));
-    //v_color.g += mix(clamp(1.0-lightcolor.g, 0.0, 1.0), 1.0, (color.g * directional * lightcolor.g * lightintensity));
-    //v_color.b += mix(clamp(1.0-lightcolor.b, 0.0, 1.0), 1.0, (color.b * directional * lightcolor.b * lightintensity));     
+    if (a_normal.y != 0.0) {
+        directional = mix(0.0, 1.0, directional * 
+            ((0.2 + clamp(pow(t * (maxH / 150.0), 0.75), 0.7, 1.0)) / 1.2));
+    }
 
     // Assign final color based on surface + ambient light color, diffuse light directional, and light color
     // with lower bounds adjusted to hue of light
