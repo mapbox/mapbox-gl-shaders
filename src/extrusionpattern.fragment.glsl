@@ -19,14 +19,18 @@ varying vec2 v_pos_b;
 varying vec4 v_shadow;
 varying float v_directional;
 
+#ifdef MAPBOX_GL_JS
 #pragma mapbox: define lowp float minH
 #pragma mapbox: define lowp float maxH
-#pragma mapbox: define lowp float opacity
+#endif
+#pragma mapbox: define lowp vec4 color
 
 void main() {
+#ifdef MAPBOX_GL_JS
     #pragma mapbox: initialize lowp float minH
     #pragma mapbox: initialize lowp float maxH
-    #pragma mapbox: initialize lowp float opacity
+#endif
+    #pragma mapbox: initialize lowp vec4 color
 
     vec2 imagecoord = mod(v_pos_a, 1.0);
     vec2 pos = mix(u_pattern_tl_a, u_pattern_br_a, imagecoord);
@@ -39,7 +43,7 @@ void main() {
     vec4 mixedColor = mix(color1, color2, u_mix);
     mixedColor.rgb *= v_directional;
 
-    gl_FragColor = (mixedColor + v_shadow) * opacity;
+    gl_FragColor = (mixedColor + v_shadow);
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);

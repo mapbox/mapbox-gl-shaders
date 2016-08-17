@@ -27,14 +27,22 @@ varying vec2 v_pos_b;
 varying vec4 v_shadow;
 varying float v_directional;
 
+#ifndef MAPBOX_GL_JS
+attribute float minH;
+attribute float maxH;
+#else
 #pragma mapbox: define lowp float minH
 #pragma mapbox: define lowp float maxH
-#pragma mapbox: define lowp float opacity
+#endif
+
+#pragma mapbox: define lowp vec4 color
 
 void main() {
+#ifdef MAPBOX_GL_JS
     #pragma mapbox: initialize lowp float minH
     #pragma mapbox: initialize lowp float maxH
-    #pragma mapbox: initialize lowp float opacity
+#endif
+    #pragma mapbox: initialize lowp vec4 color
 
     float t = mod(a_normal.x, 2.0);
     float z = t > 0.0 ? maxH : minH;
