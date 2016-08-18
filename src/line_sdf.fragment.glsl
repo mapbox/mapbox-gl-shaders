@@ -13,10 +13,12 @@ varying float v_gamma_scale;
 
 #pragma mapbox: define lowp vec4 color
 #pragma mapbox: define lowp float blur
+#pragma mapbox: define lowp float opacity
 
 void main() {
     #pragma mapbox: initialize lowp vec4 color
     #pragma mapbox: initialize lowp float blur
+    #pragma mapbox: initialize lowp float opacity
 
     // Calculate the distance of the pixel from the line in pixels.
     float dist = length(v_normal) * v_linewidth.s;
@@ -32,7 +34,7 @@ void main() {
     float sdfdist = mix(sdfdist_a, sdfdist_b, u_mix);
     alpha *= smoothstep(0.5 - u_sdfgamma, 0.5 + u_sdfgamma, sdfdist);
 
-    gl_FragColor = color * (alpha * u_opacity);
+    gl_FragColor = color * (alpha * opacity);
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);
