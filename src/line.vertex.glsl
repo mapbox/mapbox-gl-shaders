@@ -17,16 +17,17 @@ uniform mediump float u_antialiasing;
 uniform mediump float u_extra;
 uniform mat2 u_antialiasingmatrix;
 uniform mediump float u_offset;
-uniform mediump float u_blur;
 
 varying vec2 v_normal;
 varying vec2 v_linewidth;
 varying float v_gamma_scale;
 
 #pragma mapbox: define lowp vec4 color
+#pragma mapbox: define lowp float blur
 
 void main() {
     #pragma mapbox: initialize lowp vec4 color
+    #pragma mapbox: initialize lowp float blur
 
     vec2 a_extrude = a_data.xy - 128.0;
     float a_direction = mod(a_data.z, 4.0) - 1.0;
