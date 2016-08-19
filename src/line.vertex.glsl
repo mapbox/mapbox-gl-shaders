@@ -1,3 +1,9 @@
+
+
+// the distance over which the line edge fades out.
+// Retina devices need a smaller distance to avoid aliasing.
+#define ANTIALIASING 1.0 / DEVICE_PIXEL_RATIO / 2.0
+
 // floor(127 / 2) == 63.0
 // the maximum allowed miter limit is 2.0 at the moment. the extrude normal is
 // stored in a byte (-128..127). we scale regular normals up to length 63, but
@@ -13,7 +19,6 @@ uniform mat4 u_matrix;
 uniform mediump float u_ratio;
 uniform mediump float u_linewidth;
 uniform mediump float u_gapwidth;
-uniform mediump float u_antialiasing;
 uniform mediump float u_extra;
 uniform mat2 u_antialiasingmatrix;
 uniform mediump float u_offset;
@@ -42,8 +47,8 @@ void main() {
     normal.y = sign(normal.y - 0.5);
     v_normal = normal;
 
-    float inset = u_gapwidth + (u_gapwidth > 0.0 ? u_antialiasing : 0.0);
-    float outset = u_gapwidth + u_linewidth * (u_gapwidth > 0.0 ? 2.0 : 1.0) + u_antialiasing;
+    float inset = u_gapwidth + (u_gapwidth > 0.0 ? ANTIALIASING : 0.0);
+    float outset = u_gapwidth + u_linewidth * (u_gapwidth > 0.0 ? 2.0 : 1.0) + ANTIALIASING;
 
     // Scale the extrusion vector down to a normal and then up by the line width
     // of this vertex.

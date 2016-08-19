@@ -10,6 +10,10 @@
 // long distances for long segments. Use this value to unscale the distance.
 #define LINE_DISTANCE_SCALE 2.0
 
+// the distance over which the line edge fades out.
+// Retina devices need a smaller distance to avoid aliasing.
+#define ANTIALIASING 1.0 / DEVICE_PIXEL_RATIO / 2.0
+
 attribute vec2 a_pos;
 attribute vec4 a_data;
 
@@ -17,7 +21,6 @@ uniform mat4 u_matrix;
 uniform mediump float u_ratio;
 uniform mediump float u_linewidth;
 uniform mediump float u_gapwidth;
-uniform mediump float u_antialiasing;
 uniform mediump float u_extra;
 uniform mat2 u_antialiasingmatrix;
 uniform mediump float u_offset;
@@ -46,8 +49,8 @@ void main() {
     normal.y = sign(normal.y - 0.5);
     v_normal = normal;
 
-    float inset = u_gapwidth + (u_gapwidth > 0.0 ? u_antialiasing : 0.0);
-    float outset = u_gapwidth + u_linewidth * (u_gapwidth > 0.0 ? 2.0 : 1.0) + u_antialiasing;
+    float inset = u_gapwidth + (u_gapwidth > 0.0 ? ANTIALIASING : 0.0);
+    float outset = u_gapwidth + u_linewidth * (u_gapwidth > 0.0 ? 2.0 : 1.0) + ANTIALIASING;
 
     // Scale the extrusion vector down to a normal and then up by the line width
     // of this vertex.
