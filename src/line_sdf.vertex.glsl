@@ -19,28 +19,31 @@ attribute vec4 a_data;
 
 uniform mat4 u_matrix;
 uniform mediump float u_ratio;
-uniform mediump float u_linewidth;
-uniform mediump float u_gapwidth;
 uniform vec2 u_patternscale_a;
 uniform float u_tex_y_a;
 uniform vec2 u_patternscale_b;
 uniform float u_tex_y_b;
 uniform float u_extra;
 uniform mat2 u_antialiasingmatrix;
-uniform mediump float u_offset;
 
 varying vec2 v_normal;
-varying vec2 v_linewidth;
+varying vec2 v_width2;
 varying vec2 v_tex_a;
 varying vec2 v_tex_b;
 varying float v_gamma_scale;
 
 #pragma mapbox: define lowp vec4 color
 #pragma mapbox: define lowp float blur
+#pragma mapbox: define lowp float width
+#pragma mapbox: define mediump float gapwidth
+#pragma mapbox: define lowp float offset
 
 void main() {
     #pragma mapbox: initialize lowp vec4 color
     #pragma mapbox: initialize lowp float blur
+    #pragma mapbox: initialize lowp float width
+    #pragma mapbox: initialize mediump float gapwidth
+    #pragma mapbox: initialize lowp float offset
 
     vec2 a_extrude = a_data.xy - 128.0;
     float a_direction = mod(a_data.z, 4.0) - 1.0;
@@ -54,8 +57,8 @@ void main() {
     normal.y = sign(normal.y - 0.5);
     v_normal = normal;
 
-    float inset = u_gapwidth + (u_gapwidth > 0.0 ? ANTIALIASING : 0.0);
-    float outset = u_gapwidth + u_linewidth * (u_gapwidth > 0.0 ? 2.0 : 1.0) + ANTIALIASING;
+    float inset = gapwidth + (gapwidth > 0.0 ? ANTIALIASING : 0.0);
+    float outset = gapwidth + width * (gapwidth > 0.0 ? 2.0 : 1.0) + ANTIALIASING;
 
     // Scale the extrusion vector down to a normal and then up by the line width
     // of this vertex.
@@ -67,11 +70,11 @@ void main() {
     // extrude vector points in another direction.
     mediump float u = 0.5 * a_direction;
     mediump float t = 1.0 - abs(u);
-    mediump vec2 offset = u_offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
+    mediump vec2 offset2 = offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
 
     // Remove the texture normal bit of the position before scaling it with the
     // model/view matrix.
-    gl_Position = u_matrix * vec4(floor(a_pos * 0.5) + (offset + dist) / u_ratio, 0.0, 1.0);
+    gl_Position = u_matrix * vec4(floor(a_pos * 0.5) + (offset2 + dist) / u_ratio, 0.0, 1.0);
 
     v_tex_a = vec2(a_linesofar * u_patternscale_a.x, normal.y * u_patternscale_a.y + u_tex_y_a);
     v_tex_b = vec2(a_linesofar * u_patternscale_b.x, normal.y * u_patternscale_b.y + u_tex_y_b);
@@ -85,6 +88,6 @@ void main() {
     // how much features are squished in all directions by the perspectiveness
     float perspective_scale = 1.0 / (1.0 - min(y * u_extra, 0.9));
 
-    v_linewidth = vec2(outset, inset);
+    v_width2 = vec2(outset, inset);
     v_gamma_scale = perspective_scale * squish_scale;
 }
