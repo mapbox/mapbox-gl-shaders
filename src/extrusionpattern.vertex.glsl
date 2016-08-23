@@ -14,6 +14,7 @@ uniform vec2 u_pixel_coord_lower;
 uniform float u_scale_a;
 uniform float u_scale_b;
 uniform float u_tile_units_to_pixels;
+uniform float u_height_factor;
 
 uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
@@ -57,10 +58,12 @@ void main() {
     vec2 offset_b = mod(mod(mod(u_pixel_coord_upper, scaled_size_b) * 256.0, scaled_size_b) * 256.0 + u_pixel_coord_lower, scaled_size_b);
 
     if (a_normal.x == 1.0 && a_normal.y == 0.0 && a_normal.z == 16384.0) {
-        v_pos_a = (u_tile_units_to_pixels * vec2(a_pos.x, a_pos.y) + offset_a) / scaled_size_a;
-        v_pos_b = (u_tile_units_to_pixels * vec2(a_pos.x, a_pos.y) + offset_b) / scaled_size_b;
+        // extrusion top
+        v_pos_a = (u_tile_units_to_pixels * a_pos + offset_a) / scaled_size_a;
+        v_pos_b = (u_tile_units_to_pixels * a_pos + offset_b) / scaled_size_b;
     } else {
-        float hf = z * -8.0;
+        // extrusion side
+        float hf = z * u_height_factor;
 
         v_pos_a = (u_tile_units_to_pixels * vec2(a_edgedistance, hf) + offset_a) / scaled_size_a;
         v_pos_b = (u_tile_units_to_pixels * vec2(a_edgedistance, hf) + offset_b) / scaled_size_b;
