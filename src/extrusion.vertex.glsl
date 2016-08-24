@@ -54,6 +54,5 @@ void main() {
     ) / 1.2);
 
     v_color.rgb *= directional;
-
     v_color += shadow * u_shadow;
 }
