@@ -53,6 +53,7 @@ void main() {
         pow(t * clamp(maxH / 150.0, 0.0, 1.0), 0.25)
     ) / 1.2);
 
+
     v_color.rgb *= directional;
     v_color += shadow * u_shadow;
 }
