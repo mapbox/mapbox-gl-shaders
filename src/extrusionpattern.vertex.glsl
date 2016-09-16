@@ -16,8 +16,9 @@ uniform float u_scale_b;
 uniform float u_tile_units_to_pixels;
 uniform float u_height_factor;
 
-uniform vec3 u_lightdir;
-uniform vec4 u_shadow;
+uniform vec3 u_lightcolor;
+uniform lowp vec3 u_lightdir;
+uniform lowp float u_lightintensity;
 
 attribute vec2 a_pos;
 attribute vec3 a_normal;
@@ -25,7 +26,7 @@ attribute float a_edgedistance;
 
 varying vec2 v_pos_a;
 varying vec2 v_pos_b;
-varying vec4 v_shadow;
+varying vec4 v_lighting;
 varying float v_directional;
 
 #ifndef MAPBOX_GL_JS
@@ -69,10 +70,13 @@ void main() {
         v_pos_b = (u_tile_units_to_pixels * vec2(a_edgedistance, hf) + offset_b) / scaled_size_b;
     }
 
-    float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
-    float shadow = clamp((0.3 - directional) / 7.0, 0.0, 0.3);
-    directional = mix(0.7, 1.0, directional * 2.0 * (0.2 + t) / 1.2);
+    v_lighting = vec4(0.0, 0.0, 0.0, 1.0);
+    float directional = clamp(dot(a_normal / 16383.0, u_lightdir), 0.0, 1.0);
+    directional = mix((1.0 - u_lightintensity), max((0.5 + u_lightintensity), 1.0), directional);
 
-    v_shadow = shadow * u_shadow;
-    v_directional = directional;
+    if (a_normal.y != 0.0) {
+        directional *= clamp((t + minH) * pow(maxH / 150.0, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
+    }
+
+    v_lighting.rgb += clamp(directional * u_lightcolor, mix(vec3(0.0), vec3(0.3), 1.0 - u_lightcolor), vec3(1.0));
 }

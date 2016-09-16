@@ -16,8 +16,7 @@ uniform sampler2D u_image;
 
 varying vec2 v_pos_a;
 varying vec2 v_pos_b;
-varying vec4 v_shadow;
-varying float v_directional;
+varying vec4 v_lighting;
 
 #ifdef MAPBOX_GL_JS
 #pragma mapbox: define lowp float minH
@@ -41,9 +40,8 @@ void main() {
     vec4 color2 = texture2D(u_image, pos2);
 
     vec4 mixedColor = mix(color1, color2, u_mix);
-    mixedColor.rgb *= v_directional;
 
-    gl_FragColor = (mixedColor + v_shadow);
+    gl_FragColor = mixedColor * v_lighting;
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);

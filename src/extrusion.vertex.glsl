@@ -6,13 +6,15 @@ precision highp float;
 #define highp
 #endif
 
-attribute vec2 a_pos;
-attribute vec3 a_normal;
-attribute float a_edgedistance;
 uniform mat4 u_matrix;
 uniform vec3 u_lightdir;
 uniform vec4 u_shadow;
 uniform lowp vec4 u_outline_color;
+
+attribute vec2 a_pos;
+attribute vec3 a_normal;
+attribute float a_edgedistance;
+
 varying vec4 v_color;
 
 #ifndef MAPBOX_GL_JS
