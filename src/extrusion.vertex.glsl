@@ -49,11 +49,32 @@ void main() {
     v_color = color;
 #endif
 
-    float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
-    float shadow = clamp((0.3 - directional) / 7.0, 0.0, 0.3);
-    directional = mix(0.7, 1.0, directional * 2.0 * (0.2 +
-        pow(t * clamp(maxH / 150.0, 0.0, 1.0), 0.25)
-    ) / 1.2);
+    // How dark/bright is the surface color?
+    // Relative luminance – use this for colorvalue instead? Is there gamma correction?
+    float colorvalue = color.r * 0.2126 + color.g * 0.7152 + color.b * 0.0722;
+
+    v_color = vec4(0.0, 0.0, 0.0, 1.0);
+
+    // Add slight ambient lighting so no extrusions are totally black
+    // TODO: include the lightintensity in the calculation?
+    vec4 ambientlight = vec4(0.03, 0.03, 0.03, 1.0);
+    color += ambientlight;
+
+    // Calculate cos(theta), where theta is the angle between surface normal and diffuse light ray
+    //float directional = clamp(dot(a_normal / 32768.0, u_lightdir), 0.0, 1.0);
+    float directional = clamp(dot(a_normal / 16384.0, u_lightdir), 0.0, 1.0);
+
+    // Adjust directional so that
+    // the range of values for highlight/shading is narrower
+    // with lower light intensity
+    // and with lighter/brighter surface colors
+    directional = mix((1.0 - u_lightintensity), max((1.0 - colorvalue + u_lightintensity), 1.0), directional);
+
+    // Add gradient along z axis of side surfaces
+    // Still needs a bit of work before usable
+    if (a_normal.y != 0.0) {
+        directional *= clamp((t + minH) * pow(maxH / 150.0, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
+    }
 
     v_color.rgb *= directional;
     v_color += shadow * u_shadow;
