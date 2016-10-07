@@ -7,8 +7,9 @@ precision highp float;
 #endif
 
 uniform mat4 u_matrix;
-uniform vec3 u_lightdir;
-uniform vec4 u_shadow;
+uniform vec3 u_lightcolor;
+uniform lowp vec3 u_lightdir;
+uniform lowp float u_lightintensity;
 uniform lowp vec4 u_outline_color;
 
 attribute vec2 a_pos;
@@ -40,13 +41,7 @@ void main() {
     gl_Position = u_matrix * vec4(a_pos, t > 0.0 ? maxH : minH, 1);
 
 #ifdef OUTLINE
-    #ifdef DEFAULT_COLOR
-    v_color = color;
-    #else
-    v_color = u_outline_color;
-    #endif
-#else
-    v_color = color;
+    color = u_outline_color;
 #endif
 
     // Relative luminance (how dark/bright is the surface color?)
@@ -72,6 +67,10 @@ void main() {
         directional *= clamp((t + minH) * pow(maxH / 150.0, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
     }
 
-    v_color.rgb *= directional;
-    v_color += shadow * u_shadow;
+    // Assign final color based on surface + ambient light color, diffuse light directional, and light color
+    // with lower bounds adjusted to hue of light
+    // so that shading is tinted with the complementary (opposite) color to the light color
+    v_color.r += clamp(color.r * directional * u_lightcolor.r, mix(0.0, 0.3, 1.0 - u_lightcolor.r), 1.0);
+    v_color.g += clamp(color.g * directional * u_lightcolor.g, mix(0.0, 0.3, 1.0 - u_lightcolor.g), 1.0);
+    v_color.b += clamp(color.b * directional * u_lightcolor.b, mix(0.0, 0.3, 1.0 - u_lightcolor.b), 1.0);
 }
