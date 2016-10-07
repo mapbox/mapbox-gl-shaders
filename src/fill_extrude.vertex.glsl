@@ -8,7 +8,7 @@ precision highp float;
 
 uniform mat4 u_matrix;
 uniform vec3 u_lightcolor;
-uniform lowp vec3 u_lightdir;
+uniform lowp vec3 u_lightpos;
 uniform lowp float u_lightintensity;
 uniform lowp vec4 u_outline_color;
 
@@ -54,7 +54,7 @@ void main() {
     color += ambientlight;
 
     // Calculate cos(theta), where theta is the angle between surface normal and diffuse light ray
-    float directional = clamp(dot(a_normal / 16384.0, u_lightdir), 0.0, 1.0);
+    float directional = clamp(dot(a_normal / 16384.0, u_lightpos), 0.0, 1.0);
 
     // Adjust directional so that
     // the range of values for highlight/shading is narrower

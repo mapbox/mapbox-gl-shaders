@@ -17,7 +17,7 @@ uniform float u_tile_units_to_pixels;
 uniform float u_height_factor;
 
 uniform vec3 u_lightcolor;
-uniform lowp vec3 u_lightdir;
+uniform lowp vec3 u_lightpos;
 uniform lowp float u_lightintensity;
 
 attribute vec2 a_pos;
@@ -71,7 +71,7 @@ void main() {
     }
 
     v_lighting = vec4(0.0, 0.0, 0.0, 1.0);
-    float directional = clamp(dot(a_normal / 16383.0, u_lightdir), 0.0, 1.0);
+    float directional = clamp(dot(a_normal / 16383.0, u_lightpos), 0.0, 1.0);
     directional = mix((1.0 - u_lightintensity), max((0.5 + u_lightintensity), 1.0), directional);
 
     if (a_normal.y != 0.0) {
