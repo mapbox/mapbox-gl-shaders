@@ -30,6 +30,7 @@ module.exports = {
   fillPattern: {
     fragmentSource: fs.readFileSync(path.join(__dirname, 'src/fill_pattern.fragment.glsl'), 'utf8'),
     vertexSource: fs.readFileSync(path.join(__dirname, 'src/fill_pattern.vertex.glsl'), 'utf8')
+  },
   fillExtrude: {
       fragmentSource: fs.readFileSync(path.join(__dirname, 'src/fill_extrude.fragment.glsl'), 'utf8'),
       vertexSource: fs.readFileSync(path.join(__dirname, 'src/fill_extrude.vertex.glsl'), 'utf8')
