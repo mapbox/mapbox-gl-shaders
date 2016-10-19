@@ -64,7 +64,7 @@ void main() {
 
     // Add gradient along z axis of side surfaces
     if (a_normal.y != 0.0) {
-        directional *= clamp(t * pow(maxH / 150.0, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
+        directional *= clamp((t + minH) * pow(maxH, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
     }
 
     // Assign final color based on surface + ambient light color, diffuse light directional, and light color

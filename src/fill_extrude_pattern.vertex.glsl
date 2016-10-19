@@ -75,7 +75,7 @@ void main() {
     directional = mix((1.0 - u_lightintensity), max((0.5 + u_lightintensity), 1.0), directional);
 
     if (a_normal.y != 0.0) {
-        directional *= clamp(t * pow(maxH / 150.0, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
+        directional *= clamp((t + minH) * pow(maxH, 0.5), mix(0.7, 0.98, 1.0 - u_lightintensity), 1.0);
     }
 
     v_lighting.rgb += clamp(directional * u_lightcolor, mix(vec3(0.0), vec3(0.3), 1.0 - u_lightcolor), vec3(1.0));
