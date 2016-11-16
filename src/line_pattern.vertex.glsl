@@ -52,8 +52,14 @@ void main() {
     normal.y = sign(normal.y - 0.5);
     v_normal = normal;
 
-    float inset = gapwidth / 2.0 + (gapwidth / 2.0 > 0.0 ? ANTIALIASING : 0.0);
-    float outset = gapwidth / 2.0 + width / 2.0 * (gapwidth / 2.0 > 0.0 ? 2.0 : 1.0) + ANTIALIASING;
+    // these transformations used to be applied in the JS and native code bases. 
+    // moved them into the shader for clarity and simplicity. 
+    gapwidth = gapwidth / 2.0;
+    width = width / 2.0;
+    offset = -1.0 * offset; 
+
+    float inset = gapwidth + (gapwidth > 0.0 ? ANTIALIASING : 0.0);
+    float outset = gapwidth + width * (gapwidth > 0.0 ? 2.0 : 1.0) + ANTIALIASING;
 
     // Scale the extrusion vector down to a normal and then up by the line width
     // of this vertex.
@@ -65,7 +71,7 @@ void main() {
     // extrude vector points in another direction.
     mediump float u = 0.5 * a_direction;
     mediump float t = 1.0 - abs(u);
-    mediump vec2 offset2 = -1.0 * offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
+    mediump vec2 offset2 = offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
 
     // Remove the texture normal bit of the position before scaling it with the
     // model/view matrix.
