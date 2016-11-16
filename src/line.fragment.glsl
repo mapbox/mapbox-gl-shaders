@@ -1,7 +1,6 @@
 #pragma mapbox: define lowp vec4 color
 #pragma mapbox: define lowp float blur
 #pragma mapbox: define lowp float opacity
-#pragma mapbox: define mediump float gapwidth
 
 varying vec2 v_width2;
 varying vec2 v_normal;
@@ -11,7 +10,6 @@ void main() {
     #pragma mapbox: initialize lowp vec4 color
     #pragma mapbox: initialize lowp float blur
     #pragma mapbox: initialize lowp float opacity
-    #pragma mapbox: initialize mediump float gapwidth
 
     // Calculate the distance of the pixel from the line in pixels.
     float dist = length(v_normal) * v_width2.s;
