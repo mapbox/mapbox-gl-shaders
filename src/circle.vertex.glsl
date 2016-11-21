@@ -24,7 +24,7 @@ void main(void) {
     vec2 extrude = v_extrude * radius * u_extrude_scale;
     // multiply a_pos by 0.5, since we had it * 2 in order to sneak
     // in extrusion data
-    gl_Position = u_matrix * vec4(floor(a_pos * 0.5), 0, 1);
+    gl_Position = u_matrix * vec4(floor(a_pos * 0.5), 0.0, 1.0);
 
     if (u_scale_with_map) {
         gl_Position.xy += extrude;

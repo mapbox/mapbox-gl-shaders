@@ -28,10 +28,10 @@ void main() {
 
     vec2 extrude = u_extrude_scale * (a_offset / 64.0);
     if (u_rotate_with_map) {
-        gl_Position = u_matrix * vec4(a_pos + extrude, 0, 1);
+        gl_Position = u_matrix * vec4(a_pos + extrude, 0.0, 1.0);
         gl_Position.z += z * gl_Position.w;
     } else {
-        gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
+        gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0.0, 0.0);
     }
 
     v_tex = a_tex / u_texsize;

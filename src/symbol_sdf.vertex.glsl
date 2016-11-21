@@ -42,7 +42,7 @@ void main() {
         mat2 RotationMatrix = mat2(acos, asin, -1.0 * asin, acos);
         vec2 offset = RotationMatrix * a_offset;
         vec2 extrude = u_extrude_scale * (offset / 64.0);
-        gl_Position = u_matrix * vec4(a_pos + extrude, 0, 1);
+        gl_Position = u_matrix * vec4(a_pos + extrude, 0.0, 1.0);
         gl_Position.z += z * gl_Position.w;
     // pitch-alignment: viewport
     // rotation-alignment: map
@@ -57,8 +57,8 @@ void main() {
         // use the lineangle to position points a,b along the line
         // project the points and calculate the label angle in projected space
         // this calculation allows labels to be rendered unskewed on pitched maps
-        vec4 a = u_matrix * vec4(a_pos, 0, 1);
-        vec4 b = u_matrix * vec4(a_pos + vec2(cos(lineangle),sin(lineangle)), 0, 1);
+        vec4 a = u_matrix * vec4(a_pos, 0.0, 1.0);
+        vec4 b = u_matrix * vec4(a_pos + vec2(cos(lineangle),sin(lineangle)), 0.0, 1.0);
         lowp float angle = atan((b[1]/b[3] - a[1]/a[3])/u_aspect_ratio, b[0]/b[3] - a[0]/a[3]);
         lowp float asin = sin(angle);
         lowp float acos = cos(angle);
@@ -66,13 +66,13 @@ void main() {
 
         vec2 offset = RotationMatrix * (vec2((1.0-pitchfactor)+(pitchfactor*cos(angle*2.0)), 1.0) * a_offset);
         vec2 extrude = u_extrude_scale * (offset / 64.0);
-        gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
+        gl_Position = u_matrix * vec4(a_pos, 0.0, 1.0) + vec4(extrude, 0.0, 0.0);
         gl_Position.z += z * gl_Position.w;
     // pitch-alignment: viewport
     // rotation-alignment: viewport
     } else {
         vec2 extrude = u_extrude_scale * (a_offset / 64.0);
-        gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
+        gl_Position = u_matrix * vec4(a_pos, 0.0, 1.0) + vec4(extrude, 0.0, 0.0);
     }
 
     v_gamma_scale = (gl_Position.w - 0.5);
