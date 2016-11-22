@@ -1,17 +1,40 @@
 #pragma mapbox: define lowp vec4 color
+#pragma mapbox: define mediump float radius
 #pragma mapbox: define lowp float blur
 #pragma mapbox: define lowp float opacity
+#pragma mapbox: define lowp vec4 stroke_color
+#pragma mapbox: define mediump float stroke_width
+#pragma mapbox: define lowp float stroke_opacity
 
 varying vec2 v_extrude;
 varying lowp float v_antialiasblur;
 
 void main() {
     #pragma mapbox: initialize lowp vec4 color
+    #pragma mapbox: initialize mediump float radius
     #pragma mapbox: initialize lowp float blur
     #pragma mapbox: initialize lowp float opacity
+    #pragma mapbox: initialize lowp vec4 stroke_color
+    #pragma mapbox: initialize mediump float stroke_width
+    #pragma mapbox: initialize lowp float stroke_opacity
 
-    float t = smoothstep(1.0 - max(blur, v_antialiasblur), 1.0, length(v_extrude));
-    gl_FragColor = color * (1.0 - t) * opacity;
+    float opacity_t = smoothstep(
+        0.0,
+        -max(blur, v_antialiasblur),
+        length(v_extrude) - 1.0
+    );
+
+    float color_t = stroke_width < 0.01 ? 0.0 : smoothstep(
+        -max(blur, v_antialiasblur),
+        0.0,
+        length(v_extrude) - radius / (radius + stroke_width)
+    );
+
+    gl_FragColor = opacity_t * mix(
+        color * opacity,
+        stroke_color * stroke_opacity,
+        color_t
+    );
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);
