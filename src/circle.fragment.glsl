@@ -18,23 +18,18 @@ void main() {
     #pragma mapbox: initialize mediump float stroke_width
     #pragma mapbox: initialize lowp float stroke_opacity
 
-    float opacity_t = smoothstep(
-        0.0,
-        -max(blur, v_antialiasblur),
-        length(v_extrude) - 1.0
-    );
+    float extrude_length = length(v_extrude);
+    float antialiased_blur = -max(blur, v_antialiasblur);
+
+    float opacity_t = smoothstep(0.0, antialiased_blur, extrude_length - 1.0);
 
     float color_t = stroke_width < 0.01 ? 0.0 : smoothstep(
-        -max(blur, v_antialiasblur),
+        antialiased_blur,
         0.0,
-        length(v_extrude) - radius / (radius + stroke_width)
+        extrude_length - radius / (radius + stroke_width)
     );
 
-    gl_FragColor = opacity_t * mix(
-        color * opacity,
-        stroke_color * stroke_opacity,
-        color_t
-    );
+    gl_FragColor = opacity_t * mix(color * opacity, stroke_color * stroke_opacity, color_t);
 
 #ifdef OVERDRAW_INSPECTOR
     gl_FragColor = vec4(1.0);
