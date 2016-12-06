@@ -12,6 +12,8 @@ uniform bool u_rotate_with_map;
 uniform vec2 u_extrude_scale;
 
 uniform vec2 u_texsize;
+uniform bool u_interpolate;
+uniform vec2 u_world;
 
 varying vec2 v_tex;
 varying vec2 v_fade_tex;
@@ -31,6 +33,11 @@ void main() {
         gl_Position.z += z * gl_Position.w;
     } else {
         gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
+
+        // Round coordinates.
+        if (!u_interpolate) {
+            gl_Position.xy = floor(gl_Position.xy * u_world + 0.5) / u_world;
+        }
     }
 
     v_tex = a_texture_pos / u_texsize;
