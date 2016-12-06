@@ -17,7 +17,6 @@ varying vec2 v_tex;
 varying vec2 v_fade_tex;
 
 void main() {
-    vec2 a_tex = a_texture_pos.xy;
     mediump float a_labelminzoom = a_data[0];
     mediump vec2 a_zoom = a_data.pq;
     mediump float a_minzoom = a_zoom[0];
@@ -34,6 +33,6 @@ void main() {
         gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
     }
 
-    v_tex = a_tex / u_texsize;
+    v_tex = a_texture_pos / u_texsize;
     v_fade_tex = vec2(a_labelminzoom / 255.0, 0.0);
 }
