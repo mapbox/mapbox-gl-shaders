@@ -70,16 +70,14 @@ void main() {
     mediump float t = 1.0 - abs(u);
     mediump vec2 offset2 = offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
 
-    vec2 extrude = offset2 + dist;
-
     // Remove the texture normal bit to get the position
     vec2 pos = floor(a_pos * 0.5);
 
-    vec4 projected_extrude = u_matrix * vec4(extrude / u_ratio, 0.0, 0.0);
-    gl_Position = u_matrix * vec4(pos, 0.0, 1.0) + projected_extrude;
+    vec4 projected_extrude = u_matrix * vec4(dist / u_ratio, 0.0, 0.0);
+    gl_Position = u_matrix * vec4(pos + offset2 / u_ratio, 0.0, 1.0) + projected_extrude;
 
     // calculate how much the perspective view squishes or stretches the extrude
-    float extrude_length_without_perspective = length(extrude);
+    float extrude_length_without_perspective = length(dist);
     float extrude_length_with_perspective = length(projected_extrude.xy / gl_Position.w * u_gl_units_to_pixels);
     v_gamma_scale = extrude_length_without_perspective / extrude_length_with_perspective;
 
