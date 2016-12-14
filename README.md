@@ -1,6 +1,6 @@
 Dear `mapbox-gl-shaders` contributors,
 
-Thank you all for being such loyal supporters and champions of the `mapbox-gl-shaders` project. You helped write some amazing cross-platform GLSL.
+Thank you all for being such loyal supporters and champions of the `mapbox-gl-shaders` project. You helped write some amazing cross-platform GLSL. It has been an amazing ride, and we’re humbled by the opportunity to be part of something larger – something monolithic.
 
 However — [due to various factors](https://github.com/mapbox/mapbox-gl-js/issues/3656)  — `mapbox-gl-shaders` is no longer able to operate as an independent git repository. We have made the tough decision to merge this repository into the [`mapbox-gl-js` repository](https://github.com/mapbox/mapbox-gl-js).
 
